@@ -1,0 +1,1185 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "User Registration API",
+    "description": "API endpoints for user registration",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4500/api/v1//",
+      "description": "Local server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Endpoints related to user authentication"
+    },
+    {
+      "name": "User",
+      "description": "Endpoints related to User management"
+    },
+    {
+      "name": "Inventory",
+      "description": "Endpoints related to Inventory management"
+    },
+    {
+      "name": "Stock",
+      "description": "Endpoints related to Stock management"
+    },
+    {
+      "name": "Report",
+      "description": "Endpoints related to Report management"
+    },
+
+    {
+      "name": "Notifications",
+      "description": "Endpoints related to Notifications management"
+    }
+  ],
+  "paths": {
+    "auth/register": {
+      "post": {
+        "summary": "Register a new user with role",
+        "description": "Register a new user with a unique email address and other datas like  fullname, position, password, role.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fullname": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "role": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "username",
+                  "password",
+                  "email",
+                  "position",
+                  "role"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User successfully registered"
+          },
+          "500": {
+            "description": "Internal server error. Something went wrong on the server side."
+          }
+        },
+        "tags": ["Auth"]
+      }
+    },
+    "auth/registeremployee": {
+      "post": {
+        "summary": "Register a new user for employee",
+        "description": "Register a new user with a unique email address and other datas like  fullname, position, password, role.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fullname": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  }
+                 
+                },
+                "required": [
+                  "username",
+                  "password",
+                  "email",
+                  "position"
+                
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User successfully registered"
+          },
+          "500": {
+            "description": "Internal server error. Something went wrong on the server side."
+          }
+        },
+        "tags": ["Auth"]
+      }
+    },
+    "auth/login": {
+      "post": {
+        "summary": "Login a registered user",
+        "description": "Login with username and password.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Login successful"
+          },
+          "401": {
+            "description": "Invalid credentials or Incorrect password"
+          },
+          "500": {
+            "description": "Internal server error. Something went wrong on the server side."
+          }
+        },
+        "tags": ["Auth"]
+      }
+    },
+    "auth/logout": {
+      "get": {
+        "summary": "Logout",
+        "description": "Clear the session and logout.",
+        "responses": {
+          "200": {
+            "description": "user logged out"
+          },
+          "500": {
+            "description": "Internal server error. Something went wrong on the server side."
+          }
+        },
+        "tags": ["Auth"]
+      }
+    },
+    "auth/forgot-password": {
+      "post": {
+        "summary": "Forgot Password",
+        "description": "Send a password reset link to the user's email.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  }
+                },
+                "required": ["email"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset link sent successfully"
+          },
+          "400": {
+            "description": "Email can not be null"
+          },
+          "404": {
+            "description": "User not found. Indicates that the email does not belong to any registered user."
+          },
+          "500": {
+            "description": "Internal server error. Something went wrong on the server side."
+          }
+        },
+        "tags": ["Auth"]
+      }
+    },
+    "auth/reset-password": {
+      "post": {
+        "summary": "Reset Password",
+        "description": "Reset user's password using the reset token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "newPassword": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  }
+                },
+                "required": ["newPassword", "email"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset successful"
+          },
+          "400": {
+            "description": "Bad request. Indicates that the newPassword or email field is missing or invalid."
+          },
+          "404": {
+            "description": "User not found. Indicates that the email does not belong to any registered user."
+          },
+          "500": {
+            "description": "Internal server error. Something went wrong on the server side."
+          }
+        },
+        "tags": ["Auth"]
+      }
+    },
+    "users/getallusers": {
+      "get": {
+        "summary": "Get all users",
+        "description": "Retrieve a list of all users.",
+        "tags": ["User"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Authentication token is missing or invalid."
+          },
+          "500": {
+            "description": "Internal Server Error. Something went wrong on the server side."
+          }
+        }
+      }
+    },
+    "users/getuserById/{id}": {
+      "get": {
+        "summary": "Get user by ID",
+        "description": "Retrieve user details by their unique ID.",
+        "tags": ["User"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the user to retrieve"
+            },
+            "description": "User ID"
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "401": {
+            "description": "Unauthorized. Authentication token is missing or invalid."
+          },
+          "500": {
+            "description": "Internal Server Error. Something went wrong on the server side."
+          }
+        }
+      }
+    },
+    "users/delete/{id}": {
+      "delete": {
+        "summary": "Delete user by ID",
+        "description": "Delete a user by their unique ID.",
+        "tags": ["User"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the user to delete"
+            },
+            "description": "User ID"
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Message indicating successful deletion"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. No such user found"
+          },
+          "401": {
+            "description": "Unauthorized. Authentication token is missing or invalid."
+          },
+          "403": {
+            "description": "Forbidden. Unauthorized to access this action."
+          },
+          "500": {
+            "description": "Internal Server Error. Something went wrong on the server side."
+          }
+        }
+      }
+    },
+    "users/update": {
+      "patch": {
+        "summary": "Update user information",
+        "description": "Update user information such as full name, position, email, role, and API permissions.",
+        "tags": ["User"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fullname": {
+                    "type": "string",
+                    "description": "The full name of the user."
+                  },
+                  "position": {
+                    "type": "string",
+                    "description": "The position or job title of the user."
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "The email address of the user."
+                  },
+                  "role": {
+                    "type": "string",
+                    "description": "The role of the user."
+                  },
+                  "api_permission": {
+                    "type": "string",
+                    "description": "The API permissions of the user."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User information updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. Please provide at least one value to update"
+          },
+          "401": {
+            "description": "Unauthorized. Authentication token is missing or invalid."
+          },
+          "500": {
+            "description": "Internal Server Error. Something went wrong on the server side."
+          }
+        }
+      }
+    },
+    "users/updateUserPassword": {
+      "patch": {
+        "summary": "Update user password",
+        "description": "Update user password by providing the old password and the new password.",
+        "tags": ["User"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "oldPassword": {
+                    "type": "string",
+                    "description": "The user's current password."
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "description": "The new password to be set for the user."
+                  }
+                },
+                "required": ["oldPassword", "newPassword"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "description": "Success message indicating password update."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. Please provide both old and new passwords."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication token is missing or invalid."
+          },
+          "403": {
+            "description": "Forbidden. Invalid credentials provided."
+          },
+          "500": {
+            "description": "Internal Server Error. Something went wrong on the server side."
+          }
+        }
+      }
+    },
+    "inventory/": {
+      "post": {
+        "summary": "Create a new inventory item",
+        "description": "Create a new inventory item with specified details such as name, description, quantity, price, and category.",
+        "tags": ["Inventory"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The name of the inventory item."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "The description of the inventory item."
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "description": "The quantity of the inventory item."
+                  },
+                  "price": {
+                    "type": "number",
+                    "description": "The price of the inventory item."
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "The category of the inventory item."
+                  }
+                },
+                "required": [
+                  "name",
+                  "description",
+                  "quantity",
+                  "price",
+                  "category"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Inventory item created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryItem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. Something went wrong on the server side."
+          }
+        }
+      }
+    },
+    "inventory/getAllInventoryItems": {
+      "get": {
+        "summary": "Get all inventory items",
+        "description": "Retrieve a list of all inventory items.",
+        "tags": ["Inventory"],
+        "responses": {
+          "200": {
+            "description": "A list of inventory items",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InventoryItem"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. Something went wrong on the server side."
+          }
+        }
+      }
+    },
+    "inventory/getCurrentInventoryItems": {
+      "get": {
+        "summary": "Get current inventory items",
+        "description": "Retrieve a list of current inventory items, i.e., items with quantity greater than zero.",
+        "tags": ["Inventory"],
+        "responses": {
+          "200": {
+            "description": "A list of current inventory items",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InventoryItem"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. Something went wrong on the server side."
+          }
+        }
+      }
+    },
+    "inventory/getAllSoldItems": {
+      "get": {
+        "summary": "Get all sold items",
+        "description": "Retrieve a list of all inventory items that have been sold.",
+        "tags": ["Inventory"],
+        "responses": {
+          "200": {
+            "description": "A list of sold inventory items",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InventoryItem"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. Something went wrong on the server side."
+          }
+        }
+      }
+    },
+    "inventory/updateInventoryItem/{id}": {
+      "put": {
+        "summary": "Update inventory item by ID",
+        "description": "Update details of an inventory item by its ID.",
+        "tags": ["Inventory"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the inventory item to update"
+            },
+            "description": "Inventory item ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "New name of the inventory item"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "New description of the inventory item"
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "description": "New quantity of the inventory item"
+                  },
+                  "price": {
+                    "type": "number",
+                    "description": "New price of the inventory item"
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "New category of the inventory item"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Inventory item updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryItem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. Something went wrong on the server side."
+          }
+        }
+      }
+    },
+    "inventory/thresholds": {
+      "put": {
+        "summary": "Set thresholds for all inventory items",
+        "description": "Set minimum and maximum thresholds for all inventory items.",
+        "tags": ["Inventory"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "minThreshold": {
+                    "type": "number",
+                    "description": "The minimum threshold value to be set for all inventory items."
+                  },
+                  "maxThreshold": {
+                    "type": "number",
+                    "description": "The maximum threshold value to be set for all inventory items."
+                  }
+                },
+                "required": ["minThreshold", "maxThreshold"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Thresholds updated successfully for all inventory items",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Success message indicating thresholds update."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. Something went wrong on the server side."
+          }
+        }
+      }
+    },
+    "inventory/deleteInventoryItem/{id}": {
+      "delete": {
+        "summary": "Delete inventory item by ID",
+        "description": "Delete an inventory item by its ID.",
+        "tags": ["Inventory"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the inventory item to delete"
+            },
+            "description": "Inventory item ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Inventory item deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Success message indicating deletion of the inventory item."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. Something went wrong on the server side."
+          }
+        }
+      }
+    },
+    "/inventory/InventorySearch": { 
+    "post": { 
+      "summary": "Search Inventory Items", 
+      "description": "Search for inventory items by name.", 
+      "tags": ["Inventory"], 
+      "requestBody": { 
+        "required": true, 
+        "content": { 
+          "application/json": { 
+            "schema": { 
+              "type": "object", 
+              "properties": { 
+                "name": { 
+                  "type": "string", 
+                  "description": "Name of the inventory item to search for" 
+                } 
+              }, 
+              "required": ["name"] 
+            } 
+          } 
+        } 
+      }, 
+      "responses": { 
+        "200": { 
+          "description": "Success", 
+          "content": { 
+            "application/json": { 
+              "schema": { 
+                "type": "object", 
+                "properties": { 
+                  "success": { 
+                    "type": "boolean", 
+                    "description": "Indicates whether the search was successful" 
+                  }, 
+                  "data": { 
+                    "type": "array", 
+                    "items": { 
+                      "type": "object", 
+                      "description": "Inventory item matching the search criteria" 
+                    }, 
+                    "description": "Array of inventory items" 
+                  } 
+                } 
+              } 
+            } 
+          } 
+        }, 
+        "500": { 
+          "description": "Internal Server Error. Something went wrong on the server side." 
+        } 
+      } 
+    } 
+  },
+    "stock/createStockMovement/": {
+      "post": {
+        "summary": "Create a new stock movement",
+        "description": "Create a new stock movement record for a specific inventory item.",
+        "tags": ["Stock"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "inventoryItemId": {
+                    "type": "string",
+                    "description": "ID of the inventory item associated with the stock movement"
+                  },
+                  "movementType": {
+                    "type": "string",
+                    "enum": ["purchase", "return", "sale"],
+                    "description": "Type of movement: 'purchase', 'return', or 'sale'"
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "description": "Quantity of the stock movement"
+                  }
+                },
+                "required": ["inventoryItemId", "movementType", "quantity"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Stock movement created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "savedMovement": {
+                      "type": "object",
+                      "description": "Details of the saved stock movement",
+                      "properties": {
+                        "inventoryItem": {
+                          "type": "string",
+                          "description": "ID of the inventory item associated with the stock movement"
+                        },
+                        "movementType": {
+                          "type": "string",
+                          "description": "Type of movement: 'purchase', 'return', or 'sale'"
+                        },
+                        "quantity": {
+                          "type": "integer",
+                          "description": "Quantity of the stock movement"
+                        }
+                      }
+                    },
+                    "updatedItem": {
+                      "type": "object",
+                      "description": "Details of the updated inventory item",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the inventory item"
+                        },
+                        "description": {
+                          "type": "string",
+                          "description": "Description of the inventory item"
+                        },
+                        "quantity": {
+                          "type": "integer",
+                          "description": "Updated quantity of the inventory item"
+                        },
+                        "price": {
+                          "type": "number",
+                          "description": "Price of the inventory item"
+                        },
+                        "category": {
+                          "type": "string",
+                          "description": "Category of the inventory item"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request. Insufficient quantity in stock."
+          },
+          "500": {
+            "description": "Internal Server Error. Something went wrong on the server side."
+          }
+        }
+      }
+    },
+    "stock/getAllStockMovements/": {
+      "get": {
+        "summary": "Get all stock movements",
+        "description": "Retrieve a list of all stock movements.",
+        "tags": ["Stock"],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StockMovement"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. Something went wrong on the server side."
+          }
+        }
+      }
+    },
+    "stock/getStockMovementById/{id}": {
+      "get": {
+        "summary": "Get stock movement by ID",
+        "description": "Retrieve a stock movement by its ID.",
+        "tags": ["Stock"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the stock movement to retrieve"
+            },
+            "description": "Stock movement ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockMovement"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stock movement not found"
+          },
+          "500": {
+            "description": "Internal Server Error. Something went wrong on the server side."
+          }
+        }
+      }
+    },
+    "stock/updateStockMovement/{id}": {
+      "put": {
+        "summary": "Update stock movement by ID",
+        "description": "Update a stock movement by its ID.",
+        "tags": ["Stock"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the stock movement to update"
+            },
+            "description": "Stock movement ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StockMovement"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockMovement"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. Something went wrong on the server side."
+          }
+        }
+      }
+    },
+    "stock/deleteStockMovement/{id}": {
+      "delete": {
+        "summary": "Delete stock movement by ID",
+        "description": "Delete a stock movement by its ID.",
+        "tags": ["Stock"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the stock movement to delete"
+            },
+            "description": "Stock movement ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stock movement deleted successfully"
+          },
+          "500": {
+            "description": "Internal Server Error. Something went wrong on the server side."
+          }
+        }
+      }
+    },
+    "report/generateAndSendReport": {
+      "post": {
+        "summary": "Generate and send inventory report",
+        "description": "Generate and send an inventory report via email.",
+        "tags": ["Report"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email address to which the report will be sent"
+                  }
+                },
+                "required": ["email"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Report sent successfully"
+          },
+          "500": {
+            "description": "Internal Server Error. Something went wrong on the server side."
+          }
+        }
+      }
+    },
+
+    "notification/emails": {
+      "post": {
+        "summary": "Create Email Address",
+        "description": "Create a new email address.",
+        "tags": ["Notifications"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "address": {
+                    "type": "string",
+                    "description": "Email address to be created"
+                  }
+                },
+                "required": ["address"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Email address created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Confirmation message"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. Something went wrong on the server side."
+          }
+        }
+      }
+    }
+  }
+}
