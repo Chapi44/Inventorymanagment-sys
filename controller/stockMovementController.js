@@ -2,6 +2,8 @@ const InventoryItem = require("../model/InventoryItem");
 const StockMovement = require("../model/StockMovement");
 
 const createStockMovement = async (req, res) => {
+  const userId=req.user.userId;
+
   try {
     const { inventoryItemId, movementType, quantity } = req.body;
 
@@ -24,6 +26,7 @@ const createStockMovement = async (req, res) => {
       inventoryItem: inventoryItemId,
       movementType,
       quantity,
+      user:userId
     });
     const savedMovement = await newMovement.save();
 
